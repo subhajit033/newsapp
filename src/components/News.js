@@ -14,7 +14,7 @@ export class News extends Component {
                             <NewsItem title="myTitle" description="myDescription" />
                         </div>
                         <div className="col-md-3 my-3">
-                            <NewsItem title="myTitle" description="myDescription" />
+                            <NewsItem title="myTitle" description="myDescription" imageUrl = "myUrl"/>
                         </div>
                         <div className="col-md-3 my-3">
                             <NewsItem title="myTitle" description="myDescription" />
