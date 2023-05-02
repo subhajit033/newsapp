@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 
 export class Navbar extends Component {
+    handleSubmit = (e) => {
+        e.preventDefault();
+        let searchValue = document.querySelector('.search-input').value;
+        console.log(searchValue);
+    }
     render() {
         return (
             <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -22,9 +27,9 @@ export class Navbar extends Component {
                                 <a href='/' className="nav-link">Disabled</a>
                             </li>
                         </ul>
-                        <form className="d-flex" role="search">
-                            <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                            <button className="btn btn-outline-success" type="submit">Search</button>
+                        <form className="d-flex" role="search" onSubmit={this.handleSubmit}>
+                            <input className="form-control search-input me-2" type="search" placeholder="Search" aria-label="Search" />
+                            <button className="btn btn-outline-success" type="submit" >Search</button>
                         </form>
                     </div>
                 </div>

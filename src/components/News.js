@@ -24,7 +24,7 @@ export class News extends Component {
             },
             "author": "Antonio G. Di Benedetto",
             "title": "Today is Star Wars Jedi: Survivor launch day, and you can get it with a $10 gift card",
-            "description": "Plus, deals on a large Hisense U8H 4K Mini LED TV, the Amazfit GTR 4 smartwatch, Microsoft’s Xbox Wireless Headset for consoles and PC, Drop’s MT3 keycaps, and more.",
+            "description": "Plus, deals on a large Hisense U8H 4K Mini LED TV, the Amazfit GTR 4 smartwatch, Microsoft’s Xbox Wireless Headset for consoles and PC, Drop's MT3 keycaps, and more.",
             "url": "https://www.theverge.com/2023/4/28/23700498/star-wars-jedi-survivor-amazfit-gtr-smartwatch-hisense-u8h-tv-deal-sale",
             "urlToImage": "https://cdn.vox-cdn.com/thumbor/UTq9mF8Jei8qogzkrd9cWgS7CPY=/0x0:7200x4050/1200x628/filters:focal(3600x2025:3601x2026)/cdn.vox-cdn.com/uploads/chorus_asset/file/24617698/SWJS_Survivor_Key_Art_Standard_16x9_copy.jpg",
             "publishedAt": "2023-04-28T16:05:00Z",
@@ -46,13 +46,42 @@ export class News extends Component {
         }
 
     ]
+    handlePrevClick = async () => {
+        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=5ff9696d98d945c49e3fe42468d0dd32&page=${this.state.page - 1}`;
+        let data = await fetch(url);
+        let parseData = await data.json();
+        console.log(parseData);
+        this.setState = {
+            page: this.state.page - 1,
+            articles: parseData.articles
+        }
+    }
+    handleNextClick = async () => {
+        console.log("Kaka click");
+        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=5ff9696d98d945c49e3fe42468d0dd32&page=2`;
+        let data = await fetch(url);
+        let parseData = await data.json();
+        console.log(parseData);
+        this.setState = {
+            page: this.state.page + 1,
+            articles: parseData.articles
+        }
+    }
     constructor() {
         super();
-        console.log("KAka cons");
+
         this.state = {
+            page: 1,
             articles: this.articles,
             loading: true
         }
+    }
+    async componentDidMount() {
+        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=5ff9696d98d945c49e3fe42468d0dd32&page=${this.state.page}`;
+        let data = await fetch(url);
+        let parseData = await data.json();
+        console.log(parseData);
+        this.setState({ articles: parseData.articles })
     }
     render() {
         return (
@@ -62,16 +91,17 @@ export class News extends Component {
 
                     <div className="row">
                         {this.state.articles.map((ele) => {
+                            // k every itreable item should have unique key
                             return <div className="col-md-3 my-3" key={ele
                                 .url}>
-                                <NewsItem  title={ele.title.slice(0, 45)} description={ele.description.slice(0, 88)} imageUrl = {ele.urlToImage} artUrl = {ele.url}/>
+                                <NewsItem title={ele.title !== null ? ele.title.slice(0, 45) : "No title available"} description={ele.description !== null ? ele.description.slice(0, 88) : "No description available"} imageUrl={ele.urlToImage} artUrl={ele.url} />
                             </div>;
                         })}
-
-
                     </div>
-
-
+                </div>
+                <div className="d-flex justify-content-center my-4">
+                    <button type="button" className="btn btn-primary mx-3" onClick={this.handlePrevClick}>&larr; Previous</button>
+                    <button type="button" className="btn btn-primary" onClick={this.handleNextClick}>Next &rarr;</button>
                 </div>
 
             </>
