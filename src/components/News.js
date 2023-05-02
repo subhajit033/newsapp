@@ -51,22 +51,24 @@ export class News extends Component {
         let data = await fetch(url);
         let parseData = await data.json();
         console.log(parseData);
-        this.setState = {
+        this.setState = ({
             page: this.state.page - 1,
             articles: parseData.articles
-        }
+        })
     }
     handleNextClick = async () => {
         console.log("Kaka click");
-        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=5ff9696d98d945c49e3fe42468d0dd32&page=2`;
+        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=5ff9696d98d945c49e3fe42468d0dd32&page=${this.state.page + 1}`;
         let data = await fetch(url);
         let parseData = await data.json();
         console.log(parseData);
-        this.setState = {
+        this.setState = ({
             page: this.state.page + 1,
             articles: parseData.articles
-        }
+        })
+        console.log(this.state.page + 1);
     }
+    
     constructor() {
         super();
 
@@ -83,6 +85,7 @@ export class News extends Component {
         console.log(parseData);
         this.setState({ articles: parseData.articles })
     }
+    
     render() {
         return (
             <>
