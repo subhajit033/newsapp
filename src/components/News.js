@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import NewsItem from './NewsItem'
+import Spinner from './Spinner'
 
 export class News extends Component {
     articles = [
@@ -46,54 +47,82 @@ export class News extends Component {
         }
 
     ]
+
     handlePrevClick = async () => {
-        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=5ff9696d98d945c49e3fe42468d0dd32&page=${this.state.page - 1}`;
-        let data = await fetch(url);
-        let parseData = await data.json();
-        console.log(parseData);
-        this.setState = ({
-            page: this.state.page - 1,
-            articles: parseData.articles
-        })
+        if (this.state.page - 1 < 1) {
+            this.setState({ disabledPrev: true })
+        }
+        else {
+            let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=5ff9696d98d945c49e3fe42468d0dd32&page=${this.state.page - 1}&pageSize=6`;
+            this.setState({ loading: true })
+            let data = await fetch(url);
+            let parseData = await data.json();
+
+            this.setState({
+                page: this.state.page - 1,
+                articles: parseData.articles,
+                disabledNext: false,
+                loading: false
+            });
+        }
     }
+
     handleNextClick = async () => {
-        console.log("Kaka click");
-        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=5ff9696d98d945c49e3fe42468d0dd32&page=${this.state.page + 1}`;
-        let data = await fetch(url);
-        let parseData = await data.json();
-        console.log(parseData);
-        this.setState = ({
-            page: this.state.page + 1,
-            articles: parseData.articles
-        })
-        console.log(this.state.page + 1);
+        if (this.state.page + 1 > Math.ceil(this.state.totalResult / 6)) {
+            this.setState({ disabledNext: true })
+        }
+
+        else {
+            let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=5ff9696d98d945c49e3fe42468d0dd32&page=${this.state.page + 1}&pageSize=6`;
+            this.setState({ loading: true });
+            let data = await fetch(url);
+            let parseData = await data.json();
+
+            this.setState({
+                page: this.state.page + 1,
+                articles: parseData.articles,
+                disabledPrev: false,
+                loading: false
+            });
+        }
+
     }
-    
+
+
     constructor() {
         super();
 
         this.state = {
             page: 1,
             articles: this.articles,
-            loading: true
+            loading: false,
+            totalResult: 0,
+            disabledNext: false,
+            disabledPrev: false
         }
     }
     async componentDidMount() {
-        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=5ff9696d98d945c49e3fe42468d0dd32&page=${this.state.page}`;
+        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=5ff9696d98d945c49e3fe42468d0dd32&page=${this.state.page}&pageSize=6`;
+        this.setState({loading: true})
         let data = await fetch(url);
         let parseData = await data.json();
-        console.log(parseData);
-        this.setState({ articles: parseData.articles })
+        
+        this.setState({
+            articles: parseData.articles,
+            totalResult: parseData.totalResults,
+            loading: false
+        })
     }
-    
+
     render() {
         return (
             <>
-                <div className='container my-4'>
-                    <h3>Top HeadLines</h3>
+                 <div className='container my-4'>
+                    <h3 className='text-center'>Top HeadLines</h3>
+                    {this.state.loading && <Spinner />}
 
                     <div className="row">
-                        {this.state.articles.map((ele) => {
+                        {!this.state.loading && this.state.articles.map((ele) => {
                             // k every itreable item should have unique key
                             return <div className="col-md-3 my-3" key={ele
                                 .url}>
@@ -103,8 +132,8 @@ export class News extends Component {
                     </div>
                 </div>
                 <div className="d-flex justify-content-center my-4">
-                    <button type="button" className="btn btn-primary mx-3" onClick={this.handlePrevClick}>&larr; Previous</button>
-                    <button type="button" className="btn btn-primary" onClick={this.handleNextClick}>Next &rarr;</button>
+                    <button disabled={this.state.disabledPrev} type="button" className="btn btn-primary mx-3" onClick={this.handlePrevClick}>&larr; Previous</button>
+                    <button disabled={this.state.disabledNext} type="button" className="btn btn-primary" onClick={this.handleNextClick}>Next &rarr;</button>
                 </div>
 
             </>
