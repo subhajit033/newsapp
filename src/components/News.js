@@ -134,7 +134,7 @@ export class News extends Component {
                             // k every itreable item should have unique key
                             return <div className="col-md-3 my-3" key={ele
                                 .url}>
-                                <NewsItem title={ele.title !== null ? ele.title.slice(0, 45) : "No title available"} description={ele.description !== null ? ele.description.slice(0, 88) : "No description available"} imageUrl={ele.urlToImage} artUrl={ele.url} />
+                                <NewsItem title={ele.title !== null ? ele.title.slice(0, 45) : "No title available"} description={ele.description !== null ? ele.description.slice(0, 88) : "No description available"} imageUrl={ele.urlToImage} artUrl={ele.url} author = {ele.author !== null ? ele.author: "Unknown"} time = {ele.publishedAt} />
                             </div>;
                         })}
                     </div>
